@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2017",
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "paths": {
+      "@env": ["src/env"],
+      "@core/*": ["src/core/*"],
+      "@models/*": ["src/models/*"],
+      "@modules/*": ["src/modules/*"],
+      "@utils/*": ["src/utils/*"]
+    },
+    "typeRoots": ["node_modules/@types", "../../node_modules/@types"]
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}

@@ -1,0 +1,63 @@
+FROM golang:1.15.4-alpine3.12 AS pruner
+RUN apk update && \
+  apk add --no-cache git openssh && \
+  go get github.com/tj/node-prune
+
+
+FROM mhart/alpine-node:14 AS deps
+RUN apk update && apk add --no-cache alpine-sdk git openssh python libc6-compat
+WORKDIR /app
+COPY --from=pruner /go/bin/node-prune /usr/bin
+COPY package.json yarn.lock .eslintrc.js .eslintignore .prettierrc .prettierignore tsconfig.json ./
+RUN yarn install --pure-lockfile && node-prune
+
+# Add builder    
+FROM deps AS builder  
+WORKDIR /app
+COPY lerna.json ./
+COPY packages/common/package.json packages/common/package.json
+COPY packages/backend/package.json packages/backend/package.json
+RUN yarn install --pure-lockfile
+COPY packages/common ./packages/common
+COPY packages/backend ./packages/backend
+ENV NODE_ENV=production
+RUN yarn build && yarn install --prod && node-prune
+
+
+FROM mhart/alpine-node:slim-14 AS app
+RUN apk update && apk add --no-cache wget
+WORKDIR /app
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages/backend/node_modules ./packages/backend/node_modules
+COPY --from=builder /app/packages/backend/dist ./packages/backend/dist
+COPY --from=builder /app/packages/common/package.json ./packages/common/package.json
+COPY --from=builder /app/packages/common/node_modules ./packages/common/node_modules
+COPY --from=builder /app/packages/common/dist ./packages/common/dist
+WORKDIR /app/packages/backend
+ENV NODE_ENV=production
+ENTRYPOINT ["node"]
+
+
+FROM app as backend
+EXPOSE 3001
+CMD ["./dist/main.js"]
+
+
+FROM app as exchange-tracker
+EXPOSE 3002
+CMD ["./dist/main.exchange-tracker.js"]
+
+
+FROM app as transfer-tracker
+EXPOSE 3003
+CMD ["./dist/main.transfer-tracker.js"]
+
+
+FROM app as order-tracker
+EXPOSE 3004
+CMD ["./dist/main.order-tracker.js"]
+
+
+FROM app as auction-tracker
+EXPOSE 3005
+CMD ["./dist/main.auction-tracker.js"]

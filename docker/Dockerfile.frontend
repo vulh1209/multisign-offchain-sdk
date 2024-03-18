@@ -1,0 +1,50 @@
+FROM golang:1.15.4-alpine3.12 AS pruner
+RUN apk update && \
+  apk add --no-cache git openssh && \
+  go get github.com/tj/node-prune
+
+
+FROM mhart/alpine-node:14 AS deps
+RUN apk update && apk add --no-cache alpine-sdk git openssh python libc6-compat
+WORKDIR /app
+COPY --from=pruner /go/bin/node-prune /usr/bin
+COPY package.json yarn.lock .eslintrc.js .eslintignore .prettierrc .prettierignore tsconfig.json ./
+RUN yarn install --pure-lockfile && node-prune
+
+
+FROM mhart/alpine-node:14 AS env
+WORKDIR /app
+ARG NEXT_PUBLIC_API_URL
+RUN echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL" >> .env
+
+
+FROM deps AS builder
+WORKDIR /app
+COPY lerna.json ./
+COPY packages/frontend/package.json packages/frontend/package.json
+RUN yarn install --pure-lockfile
+COPY packages/frontend ./packages/frontend
+COPY --from=env /app/.env ./packages/frontend/
+ENV NODE_ENV=production
+RUN yarn build && node-prune
+
+
+FROM mhart/alpine-node:slim-14 AS app
+RUN apk update && apk add --no-cache wget
+WORKDIR /app
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages/frontend/node_modules ./packages/frontend/node_modules
+COPY --from=builder /app/packages/frontend/public ./packages/frontend/public
+COPY --from=builder /app/packages/frontend/.next ./packages/frontend/.next
+COPY --from=builder /app/packages/frontend/package.json \
+  /app/packages/frontend/next.config.js \
+  /app/packages/frontend/.env \
+  ./packages/frontend/
+
+WORKDIR /app/packages/frontend
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED 1
+EXPOSE 3000
+ENTRYPOINT ["node"]
+CMD ["../../node_modules/.bin/next", "start"]

@@ -1,0 +1,50 @@
+POST https://api.testnet.marketplace.sipher.gg/nftitems/fetchTokens
+Content-Type: application/json
+
+{
+    "from": 0,
+    "count": 5,
+    "sortby": "price",
+    "filterby": ["buyNow"],
+    "type": "all",
+    "collectionAddresses": []
+}
+
+###
+
+POST https://api.testnet.marketplace.sipher.gg/nftItems/getSingleItemDetails
+Content-Type: application/json
+
+{
+    "contractAddress": "0x4d91fa57abfead5fbc8445e45b906b85bbd9744c",
+    "tokenID": "12"
+}
+
+###
+GET https://data.testnet.marketplace.sipher.gg/inu/12
+
+###
+
+POST https://api.testnet.marketplace.sipher.gg/nftItems/increaseViews
+Content-Type: application/json
+
+{
+    "contractAddress": "0x4d91fa57abfead5fbc8445e45b906b85bbd9744c",
+    "tokenID": "12"
+}
+
+###
+POST https://api.testnet.marketplace.sipher.gg/auth/getToken
+Content-Type: application/json
+
+{
+    "address": "0x4d91fa57abfead5fbc8445e45b906b85bbd9744c"
+}
+
+###
+GET https://api.testnet.marketplace.sipher.gg/account/nonce/0x4d91fa57abfead5fbc8445e45b906b85bbd9744c
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiMHg0ZDkxZmE1N2FiZmVhZDVmYmM4NDQ1ZTQ1YjkwNmI4NWJiZDk3NDRjIiwiaWF0IjoxNjQwNDQ5NzkyLCJleHAiOjE2NDA1MzYxOTJ9._6tjZabmo38zj8bybKTuOssQ1tSsvKWRyOAxCaSAvvs
+
+###
+GET https://api.testnet.marketplace.sipher.gg/nftitems/getNftAttributes/0x4d91fa57abfead5fbc8445e45b906b85bbd9744c

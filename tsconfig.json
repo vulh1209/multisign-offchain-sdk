@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    // base
+    "strict": false /* Enable all strict type-checking options. */,
+    "strictFunctionTypes": true /* Enable strict checking of function types. */,
+    "strictBindCallApply": true /* Enable strict 'bind', 'call', and 'apply' methods on functions. */,
+    "alwaysStrict": true /* Parse in strict mode and emit "use strict" for each source file. */,
+
+    /* Additional Checks */
+    "noFallthroughCasesInSwitch": true /* Report errors for fallthrough cases in switch statement. */,
+    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
+    // options
+    "module": "commonjs",
+    "target": "es6",
+    "declaration": true,
+    "noLib": false,
+    "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": true,
+    "pretty": true,
+    "removeComments": true,
+    "skipLibCheck": true,
+    "strictPropertyInitialization": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
+    "lib": ["es2015", "es2017", "esnext.asynciterable", "dom", "dom.iterable", "esnext"]
+  }
+}

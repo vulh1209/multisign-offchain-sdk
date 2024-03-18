@@ -1,0 +1,66 @@
+{
+  "name": "template",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Sipher Template",
+  "license": "MIT",
+  "scripts": {
+    "prepare": "husky install",
+    "backend": " yarn workspace @packages/backend",
+    "frontend": " yarn workspace @packages/frontend",
+    "lint": "lerna run --concurrency 1 --stream lint",
+    "build": "lerna run --concurrency 1 --stream build"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@nestjs/*",
+      "**/nestjs-*"
+    ]
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.42",
+    "@types/lodash": "^4.14.202",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "@typescript-eslint/parser": "^6.20.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "8.56.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.1.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "husky": "^9.0.7",
+    "lerna": "^8.0.2",
+    "prettier": "^3.2.4",
+    "typescript": "5.3.3"
+  },
+  "resolutions": {
+    "*/**/typescript": "5.3.3",
+    "*/**/prettier": "^3.2.4",
+    "*/**/eslint": "8.56.0",
+    "*/**/bluebird": "^3.7.2",
+    "*/**/lodash": "^4.17.21"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lerna run --concurrency 1 --stream precommit --since HEAD --exclude-dependents"
+    }
+  }
+}
